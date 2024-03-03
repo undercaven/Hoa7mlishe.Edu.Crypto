@@ -16,6 +16,25 @@ namespace Hoa7mlishe.Edu.Crypto.Controllers
         }
 
         /// <summary>
+        /// Шифрует строку методом аналитических преобразований
+        /// </summary>
+        /// <param name="message">строка для шифрования</param>
+        /// <param name="matrix">матрица</param>
+        /// <returns></returns>
+        [HttpPost("analitical")]
+        public IActionResult CalculateAnaliticalCoversions(string message, [FromBody] int[][] matrix)
+        {
+            try
+            {
+                return Ok(AnaliticalConversions.Encode(message, matrix));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Шифрует сообщение методом виженера
         /// </summary>
         /// <param name="key">ключ</param>
