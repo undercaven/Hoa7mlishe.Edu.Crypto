@@ -16,6 +16,17 @@ namespace Hoa7mlishe.Edu.Crypto.Controllers
         }
 
         /// <summary>
+        /// Проверяет корректность номера по алгоритму Луна
+        /// </summary>
+        /// <param name="number">номер для проверки</param>
+        /// <returns></returns>
+        [HttpPost("luhn")]
+        public IActionResult CheckLuhn(string number)
+        {
+            return Ok(Luhn.Check(number));
+        }
+
+        /// <summary>
         /// Рассчитывает двоичные коды символов сообщения по методу Шеннона-Фано
         /// </summary>
         /// <param name="message">сообщение для расчета</param>
