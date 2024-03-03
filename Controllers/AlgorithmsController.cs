@@ -16,6 +16,17 @@ namespace Hoa7mlishe.Edu.Crypto.Controllers
         }
 
         /// <summary>
+        /// Рассчитывает двоичные коды символов сообщения по методу Шеннона-Фано
+        /// </summary>
+        /// <param name="message">сообщение для расчета</param>
+        /// <returns></returns>
+        [HttpPost("shannonfano")]
+        public IActionResult CalculateShannon(string message)
+        {
+            return Ok(ShannonFano.Calculate(message));
+        }
+
+        /// <summary>
         /// Шифрует строку методом аналитических преобразований
         /// </summary>
         /// <param name="message">строка для шифрования</param>
