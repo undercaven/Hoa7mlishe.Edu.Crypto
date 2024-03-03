@@ -8,12 +8,6 @@ namespace Hoa7mlishe.Edu.Crypto.Algorithms
 
         public static string Calculate(string key, string message)
         {
-            if (key?.Length != 6)
-                throw new ArgumentException("Key must be 6 characters long");
-
-            if (message?.Length < 10 || message?.Length > 25)
-                throw new ArgumentException("Message must be between 10 and 25 characters long");
-
             message = message.FormatMe();
 
             var result = new StringBuilder();

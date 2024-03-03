@@ -16,22 +16,27 @@ namespace Hoa7mlishe.Edu.Crypto.Controllers
         }
 
         /// <summary>
+        /// Шифрует сообщение методом виженера
+        /// </summary>
+        /// <param name="key">ключ</param>
+        /// <param name="message">сообщение</param>
+        /// <returns></returns>
+        [HttpPost("vigener")]
+        public IActionResult CalculateVigener(string key, string message)
+        {
+            return Ok(Vigener.Encrypt(message, key));
+        }
+
+        /// <summary>
         /// Шифрует сообщение методом тритемиуса
         /// </summary>
-        /// <param name="key">ключ. длина 6 символов</param>
-        /// <param name="message">сообщение. длина от 10 до 25 символов</param>
+        /// <param name="key">ключ</param>
+        /// <param name="message">сообщение</param>
         /// <returns></returns>
         [HttpPost("tritemius")]
         public IActionResult CalculateTritemius(string key, string message)
         {
-            try
-            {
-                return Ok(Tritemius.Calculate(key, message));
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(Tritemius.Calculate(key, message));
         }
 
         /// <summary>
