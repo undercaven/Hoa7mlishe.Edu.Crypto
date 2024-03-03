@@ -1,0 +1,6 @@
+@Hoa7mlishe.Edu.Crypto_HostAddress = http://localhost:5033
+
+GET {{Hoa7mlishe.Edu.Crypto_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
