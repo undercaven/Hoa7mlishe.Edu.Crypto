@@ -14,17 +14,9 @@ namespace Hoa7mlishe.Edu.Crypto.Algorithms
 
         public List<bool> Traverse(char symbol, List<bool> data)
         {
-            // Leaf
             if (Right == null && Left == null)
             {
-                if (symbol.Equals(this.Symbol))
-                {
-                    return data;
-                }
-                else
-                {
-                    return null;
-                }
+                return symbol.Equals(this.Symbol) ? data : null;
             }
             else
             {
@@ -43,14 +35,7 @@ namespace Hoa7mlishe.Edu.Crypto.Algorithms
                     right = Right.Traverse(symbol, rightPath);
                 }
 
-                if (left != null)
-                {
-                    return left;
-                }
-                else
-                {
-                    return right;
-                }
+                return left != null ? left : right;
             }
         }
 
@@ -59,9 +44,9 @@ namespace Hoa7mlishe.Edu.Crypto.Algorithms
 
     public class HuffmanTree
     {
-        private List<Node> nodes = new List<Node>();
+        private readonly List<Node> nodes = [];
         public Node Root { get; set; }
-        public Dictionary<char, int> Frequencies = new Dictionary<char, int>();
+        public Dictionary<char, int> Frequencies = [];
 
         public HuffmanTree(string message)
         {
@@ -165,8 +150,5 @@ namespace Hoa7mlishe.Edu.Crypto.Algorithms
 
             return decoded;
         }
-
-        
-
     }
 }

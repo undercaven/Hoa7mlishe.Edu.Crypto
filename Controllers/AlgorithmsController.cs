@@ -16,6 +16,38 @@ namespace Hoa7mlishe.Edu.Crypto.Controllers
         }
 
         /// <summary>
+        /// Шифрует сообщение методом RSA
+        /// </summary>
+        /// <param name="message">сообщение</param>
+        /// <param name="num1">простое число 1</param>
+        /// <param name="num2">простое число 2</param>
+        /// <returns></returns>
+        [HttpPost("RSA/encrypt")]
+        public IActionResult EncryptRSA(string message, int num1, int num2)
+        {
+            try
+            {
+                return Ok(RSA.Encrypt(message, num1, num2));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Расшифровывает сообщение методов RSA
+        /// </summary>
+        /// <param name="message">сообщение</param>
+        /// <param name="privateKey">закрытый ключ</param>
+        /// <returns></returns>
+        [HttpPost("RSA/decrypt")]
+        public IActionResult DecryptRSA(string message, RSA.PrivateKey privateKey)
+        {
+            return Ok(RSA.Decrypt(message.ToLower(), privateKey));
+        }
+
+        /// <summary>
         /// Проверяет корректность номера по алгоритму Луна
         /// </summary>
         /// <param name="number">номер для проверки</param>
