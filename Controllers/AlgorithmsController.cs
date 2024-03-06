@@ -16,6 +16,26 @@ namespace Hoa7mlishe.Edu.Crypto.Controllers
         }
 
         /// <summary>
+        /// Выполняет второе задание с матрицами
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("MatrixSwap/rows")]
+        public IActionResult SwapRows()
+        {
+            return Ok(MatrixSwap.Decrypt2());
+        }
+
+        /// <summary>
+        /// Выполняет первое задание с матрицами
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("MatrixSwap/columns")]
+        public IActionResult SwapColumns()
+        {
+            return Ok(MatrixSwap.Decrypt1());
+        }
+
+        /// <summary>
         /// Шифрует сообщение методом RSA
         /// </summary>
         /// <param name="message">сообщение</param>
