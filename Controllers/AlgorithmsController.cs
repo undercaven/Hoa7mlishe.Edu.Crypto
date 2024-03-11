@@ -95,12 +95,31 @@ namespace Hoa7mlishe.Edu.Crypto.Controllers
         /// <param name="message">строка для шифрования</param>
         /// <param name="matrix">матрица</param>
         /// <returns></returns>
-        [HttpPost("analitical")]
-        public IActionResult CalculateAnaliticalCoversions(string message, [FromBody] int[][] matrix)
+        [HttpPost("analitical/encode")]
+        public IActionResult EncodeAnaliticalCoversions(string message, [FromBody] double[][] matrix)
         {
             try
             {
                 return Ok(AnaliticalConversions.Encode(message, matrix));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        /// <summary>
+        /// Расшифровывает строку методом аналитических преобразований
+        /// </summary>
+        /// <param name="message">зашифрованная строка</param>
+        /// <param name="matrix">исходная матрица</param>
+        /// <returns></returns>
+        [HttpPost("analitical/decode")]
+        public IActionResult DecodeAnaliticalCoversions(string message, [FromBody] double[][] matrix)
+        {
+            try
+            {
+                return Ok(AnaliticalConversions.Decode(message, matrix));
             }
             catch (ArgumentException ex)
             {

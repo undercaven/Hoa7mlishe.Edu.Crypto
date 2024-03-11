@@ -2,81 +2,64 @@
 
 namespace Hoa7mlishe.Edu.Crypto.Structures
 {
-    public class ShannonFanoNodeCollection
+    public class ShannonFanoCalculator
     {
-        private List<ShannonFanoNode> _nodes;
-
-        public ShannonFanoNodeCollection(List<ShannonFanoNode> nodes)
+        static IDictionary<char, int> ReturnWordCount(string word)
         {
-            PopulateNodes(0, nodes.Count, nodes);
-            _nodes = nodes;
+            Dictionary<char, int> obj = new();
+            word.ToList().ForEach(i =>
+            {
+                var found = obj.TryGetValue(i, out int value) ? obj[i]++ : obj[i] = 1;
+            });
+            Dictionary<char, int> sorted = obj.OrderByDescending(i => i.Value).ToDictionary(i => i.Key, i => i.Value);
+            return sorted;
+        }
+        static Dictionary<char, string> answer = new();
+        public static IDictionary<char, string> CreateTree(string word)
+        {
+            IDictionary<char, int> probClass = ReturnWordCount(word);
+            probClass.Keys.ToList().ForEach(i => { answer[i] = ""; });
+            if (probClass.Keys.Count > 1)
+            {
+                RecursiveMethod(group: probClass);
+            }
+            else answer[probClass.Keys.ToList()[0]] = "0";
+            return answer;
         }
 
-        private static void PopulateNodes(int start, int end, List<ShannonFanoNode> nodes)
+        static void RecursiveMethod(
+            IDictionary<char, int> group = null,
+            string accumulation = ""
+           )
         {
-            if (start >= end - 1)
-                return;
-
-            double sum = nodes.GetRange(start, end - start - 1).Sum(x => x.Probability);
-            double minDiff = 1;
-            int midIndex = -1;
-
-            double tempSum = 0;
-            for (int i = start; i < end; i++)
+            group.Keys.ToList().ForEach(i => answer[i] = accumulation);
+            List<char> keys = group.Keys.ToList();
+            List<int> val = group.Values.ToList();
+            List<int> diff = new();
+            if (val.Count > 1)
             {
-                tempSum += nodes[i].Probability;
-
-                var tempDiff = Math.Abs(tempSum - sum / 2);
-
-                if (tempDiff < minDiff)
+                diff = val.Select((_, index) => Math.Abs(val.ToArray()[0..(index + 1)].Sum() - val.ToArray()[(index + 1)..].Sum())).ToList().GetRange(0, val.Count - 1);
+                var indexOfMin = diff.IndexOf(diff.Min());
+                Dictionary<char, int> leftParameter = new();
+                Dictionary<char, int> rightParameter = new();
+                for (int i = 0; i < indexOfMin + 1; i++)
                 {
-                    minDiff = tempDiff;
-                    midIndex = i;
+                    leftParameter[keys[i]] = val[i];
                 }
-                else break;
+                for (int i = indexOfMin + 1; i < val.Count(); i++)
+                {
+                    rightParameter[keys[i]] = val[i];
+                }
+                if (leftParameter.Values.Count > 0)
+                {
+                    RecursiveMethod(group: leftParameter, accumulation: accumulation + "0");
+                }
+                if (rightParameter.Values.Count > 0)
+                {
+                    RecursiveMethod(group: rightParameter, accumulation: accumulation + "1");
+                }
             }
 
-            for (int i = start; i < end; ++i)
-            {
-                if (i <= midIndex)
-                {
-                    nodes[i].BitCode.Append('0');
-                }
-                else
-                {
-                    nodes[i].BitCode.Append('1');
-                }
-            }
-
-            PopulateNodes(start, midIndex + 1, nodes);
-            PopulateNodes(midIndex + 1, end, nodes);
         }
-
-        public override string ToString()
-        {
-            StringBuilder result = new();
-
-            foreach (var node in _nodes)
-            {
-                result.AppendLine($"Symbol: '{node.Symbol}' Probability: {node.Probability} BitCode: {node.BitCode}\n");
-            }
-
-            return result.ToString();
-        }
-    }
-
-    public class ShannonFanoNode
-    {
-        public ShannonFanoNode(char symbol, double probability)
-        {
-            Symbol = symbol;
-            Probability = probability;
-        }
-
-        public char Symbol { get; set; }
-        public double Probability { get; set; }
-        public StringBuilder BitCode { get; set; } = new();
-        public ShannonFanoNode Left { get; set; } = null;
-        public ShannonFanoNode Right { get; set; } = null;
     }
 }

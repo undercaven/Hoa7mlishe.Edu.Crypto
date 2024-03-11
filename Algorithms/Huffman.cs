@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.TagHelpers;
-using System.Collections;
-using System.Linq;
+﻿using System.Collections;
 using System.Text;
 
 namespace Hoa7mlishe.Edu.Crypto.Algorithms
@@ -44,6 +42,14 @@ namespace Hoa7mlishe.Edu.Crypto.Algorithms
 
     public class HuffmanTree
     {
+        public class HuffmanResponse
+        {
+            public string Bits { get; set; }
+            public double Entropy { get; set; }
+            public double AverageBitsPerSymbol { get; set; }
+            public double Redundancy { get; set; }
+        }
+
         private readonly List<Node> nodes = [];
         public Node Root { get; set; }
         public Dictionary<char, int> Frequencies = [];
@@ -92,31 +98,68 @@ namespace Hoa7mlishe.Edu.Crypto.Algorithms
             }
         }
 
-        public BitArray Encode(string message)
+        public string Encode(string message)
         {
-            List<bool> encodedSource = new List<bool>();
+            message = string.Concat(message.GroupBy(x => x).Select(x => x.Key));
+
+            StringBuilder result = new();
 
             for (int i = 0; i < message.Length; i++)
             {
-                List<bool> encodedSymbol = this.Root.Traverse(message[i], new List<bool>());
-                encodedSource.AddRange(encodedSymbol);
-            }
+                List<bool> encodedSymbol = this.Root.Traverse(message[i], []);
+                foreach (bool bit in encodedSymbol)
+                {
+                    result.Append(bit ? "1" : "0");
+                }
 
-            BitArray bits = new BitArray(encodedSource.ToArray());
-
-            return bits;
-        }
-
-        public string EncodeNeatly(string message)
-        {
-            var array = Encode(message);
-            var result = new StringBuilder();
-            foreach (bool bit in array)
-            {
-                result.Append(bit ? "1" : "0");
+                result.Append(' ');
             }
 
             return result.ToString();
+        }
+
+        public HuffmanResponse EncodeNeatly(string message)
+        {
+            var uniqueSymbols = message.GroupBy(x => x).Select(x => x.Key);
+
+            var result = Encode(string.Concat(uniqueSymbols));
+
+            var response = new HuffmanResponse
+            {
+                Bits = result.ToString(),
+                Entropy = CountEntropy(message.Length),
+                AverageBitsPerSymbol = CountAverageBits(result),
+            };
+
+            response.Redundancy = 1 - response.Entropy / response.AverageBitsPerSymbol;
+
+            return response;
+        }
+
+        private static double CountAverageBits(string symbols)
+        {
+            var totalBits = 0;
+            var splitSymbols = symbols.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            foreach (var symbol in splitSymbols)
+            {
+                totalBits += symbol.Length; 
+            }
+
+            return (double)totalBits / splitSymbols.Length;
+        }
+
+        private double CountEntropy(int messageLength)
+        {
+            double entropy = 0;
+
+            foreach (var freq in Frequencies)
+            {
+                var probability = (double) freq.Value / messageLength;
+                entropy -= Math.Log2(probability) * probability;
+            }
+
+            return entropy;
         }
 
         public string Decode(BitArray bits)
